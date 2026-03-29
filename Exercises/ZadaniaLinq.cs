@@ -152,22 +152,22 @@ public sealed class ZadaniaLinq
             .Select(x => $"Przedmiot: {x.Nazwa} (Brak ocen)");
     }
 
-    /// <summary>
-    /// Wyzwanie:
-    /// Oblicz średnią ocen końcowych dla każdego prowadzącego na podstawie wszystkich jego przedmiotów.
-    /// Pomiń brakujące oceny, ale pozostaw samych prowadzących w wyniku.
-    ///
-    /// SQL:
-    /// SELECT pr.Imie, pr.Nazwisko, AVG(z.OcenaKoncowa)
-    /// FROM Prowadzacy pr
-    /// LEFT JOIN Przedmioty p ON p.ProwadzacyId = pr.Id
-    /// LEFT JOIN Zapisy z ON z.PrzedmiotId = p.Id
-    /// WHERE z.OcenaKoncowa IS NOT NULL
-    /// GROUP BY pr.Imie, pr.Nazwisko;
-    /// </summary>
     public IEnumerable<string> Wyzwanie03_ProwadzacyISredniaOcenNaIchPrzedmiotach()
     {
-        throw Niezaimplementowano(nameof(Wyzwanie03_ProwadzacyISredniaOcenNaIchPrzedmiotach));
+        return DaneUczelni.Prowadzacy
+            .Select(pr => new
+            {
+                FullLabel = $"{pr.Imie} {pr.Nazwisko}",
+                AverageGrade = DaneUczelni.Przedmioty
+                    .Where(p => p.ProwadzacyId == pr.Id)
+                    .Join(DaneUczelni.Zapisy, p => p.Id, z => z.PrzedmiotId, (p, z) => z)
+                    .Where(z => z.OcenaKoncowa.HasValue)
+                    .Select(z => z.OcenaKoncowa.Value)
+                    .DefaultIfEmpty() 
+                    .Average()
+            })
+            .Where(res => res.AverageGrade > 0)
+            .Select(res => $"{res.FullLabel} | Średnia ocen: {res.AverageGrade:F2}");
     }
 
     /// <summary>
