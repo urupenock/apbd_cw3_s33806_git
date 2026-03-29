@@ -47,63 +47,35 @@ public sealed class ZadaniaLinq
         return new[] { result ? "Tak" : "Nie" };
     }
 
-    /// <summary>
-    /// Zadanie:
-    /// Policz, ile aktywnych zapisów znajduje się w systemie.
-    ///
-    /// SQL:
-    /// SELECT COUNT(*)
-    /// FROM Zapisy
-    /// WHERE CzyAktywny = 1;
-    /// </summary>
     public IEnumerable<string> Zadanie07_LiczbaAktywnychZapisow()
     {
-        throw Niezaimplementowano(nameof(Zadanie07_LiczbaAktywnychZapisow));
+        int count = DaneUczelni.Zapisy.Count(z => z.CzyAktywny);
+        return new[] { $"Aktywne zapisy: {count}" };
     }
 
-    /// <summary>
-    /// Zadanie:
-    /// Pobierz listę unikalnych miast studentów i posortuj ją rosnąco.
-    ///
-    /// SQL:
-    /// SELECT DISTINCT Miasto
-    /// FROM Studenci
-    /// ORDER BY Miasto;
-    /// </summary>
     public IEnumerable<string> Zadanie08_UnikalneMiastaStudentow()
     {
-        throw Niezaimplementowano(nameof(Zadanie08_UnikalneMiastaStudentow));
+        return DaneUczelni.Studenci
+            .Select(s => s.Miasto)
+            .Distinct()
+            .OrderBy(m => m);
     }
 
-    /// <summary>
-    /// Zadanie:
-    /// Zwróć trzy najnowsze zapisy na przedmioty.
-    /// W wyniku pokaż datę zapisu, identyfikator studenta i identyfikator przedmiotu.
-    ///
-    /// SQL:
-    /// SELECT TOP 3 DataZapisu, StudentId, PrzedmiotId
-    /// FROM Zapisy
-    /// ORDER BY DataZapisu DESC;
-    /// </summary>
     public IEnumerable<string> Zadanie09_TrzyNajnowszeZapisy()
     {
-        throw Niezaimplementowano(nameof(Zadanie09_TrzyNajnowszeZapisy));
+        return DaneUczelni.Zapisy
+            .OrderByDescending(z => z.DataZapisu)
+            .Take(3)
+            .Select(z => $"{z.DataZapisu:d} | Student: {z.StudentId} | Przedmiot: {z.PrzedmiotId}");
     }
 
-    /// <summary>
-    /// Zadanie:
-    /// Zaimplementuj prostą paginację dla listy przedmiotów.
-    /// Załóż stronę o rozmiarze 2 i zwróć drugą stronę danych.
-    ///
-    /// SQL:
-    /// SELECT Nazwa, Kategoria
-    /// FROM Przedmioty
-    /// ORDER BY Nazwa
-    /// OFFSET 2 ROWS FETCH NEXT 2 ROWS ONLY;
-    /// </summary>
     public IEnumerable<string> Zadanie10_DrugaStronaPrzedmiotow()
     {
-        throw Niezaimplementowano(nameof(Zadanie10_DrugaStronaPrzedmiotow));
+        return DaneUczelni.Przedmioty
+            .OrderBy(p => p.Nazwa)
+            .Skip(2)
+            .Take(2)
+            .Select(p => $"{p.Nazwa} ({p.Kategoria})");
     }
 
     /// <summary>
