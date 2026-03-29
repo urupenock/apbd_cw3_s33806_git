@@ -25,51 +25,26 @@ public sealed class ZadaniaLinq
             .Select(s => $"{s.NumerIndeksu}: {s.Nazwisko} {s.Imie}");
     }
 
-    /// <summary>
-    /// Zadanie:
-    /// Znajdź pierwszy przedmiot z kategorii Analytics.
-    /// Jeżeli taki przedmiot nie istnieje, zwróć komunikat tekstowy.
-    ///
-    /// SQL:
-    /// SELECT TOP 1 Nazwa, DataStartu
-    /// FROM Przedmioty
-    /// WHERE Kategoria = 'Analytics';
-    /// </summary>
     public IEnumerable<string> Zadanie04_PierwszyPrzedmiotAnalityczny()
     {
-        throw Niezaimplementowano(nameof(Zadanie04_PierwszyPrzedmiotAnalityczny));
+        var item = DaneUczelni.Przedmioty
+            .FirstOrDefault(p => p.Kategoria == "Analytics");
+
+        return item != null 
+            ? new[] { $"{item.Nazwa} - {item.DataStartu:d}" } 
+            : new[] { "Nie znaleziono przedmiotu Analytics." };
     }
 
-    /// <summary>
-    /// Zadanie:
-    /// Sprawdź, czy w danych istnieje przynajmniej jeden nieaktywny zapis.
-    /// Zwróć jedno zdanie z odpowiedzią True/False albo Tak/Nie.
-    ///
-    /// SQL:
-    /// SELECT CASE WHEN EXISTS (
-    ///     SELECT 1
-    ///     FROM Zapisy
-    ///     WHERE CzyAktywny = 0
-    /// ) THEN 1 ELSE 0 END;
-    /// </summary>
     public IEnumerable<string> Zadanie05_CzyIstniejeNieaktywneZapisanie()
     {
-        throw Niezaimplementowano(nameof(Zadanie05_CzyIstniejeNieaktywneZapisanie));
+        bool exists = DaneUczelni.Zapisy.Any(z => !z.CzyAktywny);
+        return new[] { exists ? "Tak" : "Nie" };
     }
 
-    /// <summary>
-    /// Zadanie:
-    /// Sprawdź, czy każdy prowadzący ma uzupełnioną nazwę katedry.
-    /// Warto użyć metody, która weryfikuje warunek dla całej kolekcji.
-    ///
-    /// SQL:
-    /// SELECT CASE WHEN COUNT(*) = COUNT(Katedra)
-    /// THEN 1 ELSE 0 END
-    /// FROM Prowadzacy;
-    /// </summary>
     public IEnumerable<string> Zadanie06_CzyWszyscyProwadzacyMajaKatedre()
     {
-        throw Niezaimplementowano(nameof(Zadanie06_CzyWszyscyProwadzacyMajaKatedre));
+        bool result = DaneUczelni.Prowadzacy.All(p => !string.IsNullOrEmpty(p.Katedra));
+        return new[] { result ? "Tak" : "Nie" };
     }
 
     /// <summary>
