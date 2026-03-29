@@ -170,27 +170,16 @@ public sealed class ZadaniaLinq
             .Select(res => $"{res.FullLabel} | Średnia ocen: {res.AverageGrade:F2}");
     }
 
-    /// <summary>
-    /// Wyzwanie:
-    /// Pokaż miasta studentów oraz liczbę aktywnych zapisów wykonanych przez studentów z danego miasta.
-    /// Posortuj wynik malejąco po liczbie aktywnych zapisów.
-    ///
-    /// SQL:
-    /// SELECT s.Miasto, COUNT(*)
-    /// FROM Studenci s
-    /// JOIN Zapisy z ON s.Id = z.StudentId
-    /// WHERE z.CzyAktywny = 1
-    /// GROUP BY s.Miasto
-    /// ORDER BY COUNT(*) DESC;
-    /// </summary>
     public IEnumerable<string> Wyzwanie04_MiastaILiczbaAktywnychZapisow()
     {
-        throw Niezaimplementowano(nameof(Wyzwanie04_MiastaILiczbaAktywnychZapisow));
-    }
-
-    private static NotImplementedException Niezaimplementowano(string nazwaMetody)
-    {
-        return new NotImplementedException(
-            $"Uzupełnij metodę {nazwaMetody} w pliku Exercises/ZadaniaLinq.cs i uruchom polecenie ponownie.");
+        return DaneUczelni.Studenci
+            .Join(DaneUczelni.Zapisy.Where(z => z.CzyAktywny), 
+                s => s.Id, 
+                z => z.StudentId, 
+                (s, z) => s.Miasto)
+            .GroupBy(miasto => miasto)
+            .Select(g => new { Miasto = g.Key, Count = g.Count() })
+            .OrderByDescending(x => x.Count)
+            .Select(x => $"Miasto: {x.Miasto} | Aktywne zapisy: {x.Count}");
     }
 }
