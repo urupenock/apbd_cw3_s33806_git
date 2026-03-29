@@ -140,21 +140,16 @@ public sealed class ZadaniaLinq
             .Select(g => $"{g.Key} - Aktywne przedmioty: {g.Count()}");
     }
 
-    /// <summary>
-    /// Wyzwanie:
-    /// Wypisz przedmioty startujące w kwietniu 2026, dla których żaden zapis nie ma jeszcze oceny końcowej.
-    ///
-    /// SQL:
-    /// SELECT p.Nazwa
-    /// FROM Przedmioty p
-    /// JOIN Zapisy z ON p.Id = z.PrzedmiotId
-    /// WHERE MONTH(p.DataStartu) = 4 AND YEAR(p.DataStartu) = 2026
-    /// GROUP BY p.Nazwa
-    /// HAVING SUM(CASE WHEN z.OcenaKoncowa IS NOT NULL THEN 1 ELSE 0 END) = 0;
-    /// </summary>
     public IEnumerable<string> Wyzwanie02_PrzedmiotyStartujaceWKwietniuBezOcenKoncowych()
     {
-        throw Niezaimplementowano(nameof(Wyzwanie02_PrzedmiotyStartujaceWKwietniuBezOcenKoncowych));
+        return DaneUczelni.Przedmioty
+            .Where(p => p.DataStartu.Month == 4 && p.DataStartu.Year == 2026)
+            .GroupJoin(DaneUczelni.Zapisy, 
+                p => p.Id, 
+                z => z.PrzedmiotId, 
+                (p, zapisy) => new { p.Nazwa, zapisy })
+            .Where(x => !x.zapisy.Any(z => z.OcenaKoncowa.HasValue))
+            .Select(x => $"Przedmiot: {x.Nazwa} (Brak ocen)");
     }
 
     /// <summary>
