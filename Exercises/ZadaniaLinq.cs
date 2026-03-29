@@ -4,48 +4,25 @@ namespace LinqConsoleLab.PL.Exercises;
 
 public sealed class ZadaniaLinq
 {
-    /// <summary>
-    /// Zadanie:
-    /// Wyszukaj wszystkich studentów mieszkających w Warsaw.
-    /// Zwróć numer indeksu, pełne imię i nazwisko oraz miasto.
-    ///
-    /// SQL:
-    /// SELECT NumerIndeksu, Imie, Nazwisko, Miasto
-    /// FROM Studenci
-    /// WHERE Miasto = 'Warsaw';
-    /// </summary>
     public IEnumerable<string> Zadanie01_StudenciZWarszawy()
     {
-        throw Niezaimplementowano(nameof(Zadanie01_StudenciZWarszawy));
+        return DaneUczelni.Studenci
+            .Where(s => s.Miasto == "Warsaw")
+            .Select(s => $"{s.NumerIndeksu}: {s.Imie} {s.Nazwisko} ({s.Miasto})");
     }
 
-    /// <summary>
-    /// Zadanie:
-    /// Przygotuj listę adresów e-mail wszystkich studentów.
-    /// Użyj projekcji, tak aby w wyniku nie zwracać całych obiektów.
-    ///
-    /// SQL:
-    /// SELECT Email
-    /// FROM Studenci;
-    /// </summary>
     public IEnumerable<string> Zadanie02_AdresyEmailStudentow()
     {
-        throw Niezaimplementowano(nameof(Zadanie02_AdresyEmailStudentow));
+        return DaneUczelni.Studenci
+            .Select(s => s.Email);
     }
 
-    /// <summary>
-    /// Zadanie:
-    /// Posortuj studentów alfabetycznie po nazwisku, a następnie po imieniu.
-    /// Zwróć numer indeksu i pełne imię i nazwisko.
-    ///
-    /// SQL:
-    /// SELECT NumerIndeksu, Imie, Nazwisko
-    /// FROM Studenci
-    /// ORDER BY Nazwisko, Imie;
-    /// </summary>
     public IEnumerable<string> Zadanie03_StudenciPosortowani()
     {
-        throw Niezaimplementowano(nameof(Zadanie03_StudenciPosortowani));
+        return DaneUczelni.Studenci
+            .OrderBy(s => s.Nazwisko)
+            .ThenBy(s => s.Imie)
+            .Select(s => $"{s.NumerIndeksu}: {s.Nazwisko} {s.Imie}");
     }
 
     /// <summary>
