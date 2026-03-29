@@ -78,35 +78,21 @@ public sealed class ZadaniaLinq
             .Select(p => $"{p.Nazwa} ({p.Kategoria})");
     }
 
-    /// <summary>
-    /// Zadanie:
-    /// Połącz studentów z zapisami po StudentId.
-    /// Zwróć pełne imię i nazwisko studenta oraz datę zapisu.
-    ///
-    /// SQL:
-    /// SELECT s.Imie, s.Nazwisko, z.DataZapisu
-    /// FROM Studenci s
-    /// JOIN Zapisy z ON s.Id = z.StudentId;
-    /// </summary>
     public IEnumerable<string> Zadanie11_PolaczStudentowIZapisy()
     {
-        throw Niezaimplementowano(nameof(Zadanie11_PolaczStudentowIZapisy));
+        return DaneUczelni.Studenci
+            .Join(DaneUczelni.Zapisy,
+                s => s.Id, 
+                z => z.StudentId, 
+                (s, z) => $"{s.Imie} {s.Nazwisko} | Data zapisu: {z.DataZapisu:d}");
     }
 
-    /// <summary>
-    /// Zadanie:
-    /// Przygotuj wszystkie pary student-przedmiot na podstawie zapisów.
-    /// Użyj podejścia, które pozwoli spłaszczyć dane do jednej sekwencji wyników.
-    ///
-    /// SQL:
-    /// SELECT s.Imie, s.Nazwisko, p.Nazwa
-    /// FROM Zapisy z
-    /// JOIN Studenci s ON s.Id = z.StudentId
-    /// JOIN Przedmioty p ON p.Id = z.PrzedmiotId;
-    /// </summary>
     public IEnumerable<string> Zadanie12_ParyStudentPrzedmiot()
     {
-        throw Niezaimplementowano(nameof(Zadanie12_ParyStudentPrzedmiot));
+        return DaneUczelni.Zapisy
+            .Join(DaneUczelni.Studenci, z => z.StudentId, s => s.Id, (z, s) => new { z, s })
+            .Join(DaneUczelni.Przedmioty, temp => temp.z.PrzedmiotId, p => p.Id, 
+                (temp, p) => $"{temp.s.Imie} {temp.s.Nazwisko} -> {p.Nazwa}");
     }
 
     /// <summary>
