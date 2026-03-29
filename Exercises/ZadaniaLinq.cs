@@ -130,22 +130,14 @@ public sealed class ZadaniaLinq
             .Select(g => $"Student: {g.Key} | Najwyższa ocena: {g.Max(x => x.OcenaKoncowa)}");
     }
 
-    /// <summary>
-    /// Wyzwanie:
-    /// Znajdź studentów, którzy mają więcej niż jeden aktywny zapis.
-    /// Zwróć pełne imię i nazwisko oraz liczbę aktywnych przedmiotów.
-    ///
-    /// SQL:
-    /// SELECT s.Imie, s.Nazwisko, COUNT(*)
-    /// FROM Studenci s
-    /// JOIN Zapisy z ON s.Id = z.StudentId
-    /// WHERE z.CzyAktywny = 1
-    /// GROUP BY s.Imie, s.Nazwisko
-    /// HAVING COUNT(*) > 1;
-    /// </summary>
     public IEnumerable<string> Wyzwanie01_StudenciZWiecejNizJednymAktywnymPrzedmiotem()
     {
-        throw Niezaimplementowano(nameof(Wyzwanie01_StudenciZWiecejNizJednymAktywnymPrzedmiotem));
+        return DaneUczelni.Zapisy
+            .Where(z => z.CzyAktywny)
+            .Join(DaneUczelni.Studenci, z => z.StudentId, s => s.Id, (z, s) => s)
+            .GroupBy(s => $"{s.Imie} {s.Nazwisko}")
+            .Where(g => g.Count() > 1)
+            .Select(g => $"{g.Key} - Aktywne przedmioty: {g.Count()}");
     }
 
     /// <summary>
